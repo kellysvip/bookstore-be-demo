@@ -61,27 +61,6 @@ router.get("/", (req, res, next) => {
   } catch (error) {
     next(error);
   }
-  //Number of items skip for selection
-  let offset = limit * (page - 1);
-
-  //Read data from db.json then parse to JSobject
-  let db = fs.readFileSync("db.json", "utf-8");
-  db = JSON.parse(db);
-  const { books } = db;
-  //Filter data by title
-  let result = [];
-
-  if (filterKeys.length) {
-    filterKeys.forEach((condition) => {
-      result = result.length
-        ? result.filter((book) => book[condition] === filterQuery[condition])
-        : books.filter((book) => book[condition] === filterQuery[condition]);
-    });
-  } else {
-    result = books;
-  }
-  //then select number of result by offset
-  result = result.slice(offset, offset + limit);
 });
 
 /**
@@ -127,7 +106,7 @@ router.post("/", (req, res, next) => {
 
     //Add new book to book JS object
     books.push(newBook);
-    //Add new book to db JS object
+    //Add new book to db JS object                            //
     db.books = books;
     //db JSobject to JSON string
     db = JSON.stringify(db);
@@ -205,38 +184,38 @@ router.put("/:bookId", (req, res, next) => {
  * description: update a book
  * query:
  * method: delete
-*/
+ */
 
-router.delete("/:bookId",(req,res,next)=>{
-    //delete input validation
-    try{
-        const { bookId }=req.params
-        //delete processing
+router.delete("/:bookId", (req, res, next) => {
+  //delete input validation
+  try {
+    const { bookId } = req.params;
+    //delete processing
 
-//Read data from db.json then parse to JSobject
-let db = fs.readFileSync("db.json", "utf-8");
-db = JSON.parse(db);
-const { books } = db;
-//find book by id
-const targetIndex=books.findIndex(book=>book.id===bookId)
-if(targetIndex < 0){
-    const exception = new Error(`Book not found`);
-        exception.statusCode = 404;
-        throw exception;
-}
+    //Read data from db.json then parse to JSobject
+    let db = fs.readFileSync("db.json", "utf-8");
+    db = JSON.parse(db);
+    const { books } = db;
+    //find book by id
+    const targetIndex = books.findIndex((book) => book.id === bookId);
+    if (targetIndex < 0) {
+      const exception = new Error(`Book not found`);
+      exception.statusCode = 404;
+      throw exception;
+    }
     //filter db books object
-db.books = books.filter(book=>book.id !== bookId)
+    db.books = books.filter((book) => book.id !== bookId);
     //db JSobject to JSON string
 
-db=JSON.stringify(db)
+    db = JSON.stringify(db);
     //write and save to db.json
 
-fs.writeFileSync("db.json",db)
-        //delete send response
-        res.status(200).send({})
-        }catch(error){
-            next(error)
-        }
-    })
+    fs.writeFileSync("db.json", db);
+    //delete send response
+    res.status(200).send({});
+  } catch (error) {
+    next(error);
+  }
+});
 
 module.exports = router;
