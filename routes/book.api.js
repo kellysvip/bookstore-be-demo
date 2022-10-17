@@ -1,5 +1,3 @@
-const fs = require("fs");
-const crypto = require("crypto");
 const express = require("express");
 const { getBooks } = require("../api/controllers/book/getBooks");
 const { createBook } = require("../api/controllers/book/createBook");

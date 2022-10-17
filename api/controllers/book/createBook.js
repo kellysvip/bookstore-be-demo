@@ -10,7 +10,7 @@ const requestSchema = Joi.object({
   language: Joi.string().required(),
   title: Joi.string().required(),
   pages: Joi.number().default(1),
-  year: Joi.number().default(0),
+  year: Joi.number().default(2022),
   limit: Joi.number().default(10),
   imageLink: Joi.string().required(),
   link: Joi.string().required(),
@@ -34,9 +34,9 @@ function createBook(req, res, next) {
       country,
       imageLink,
       language,
-      pages: parseInt(pages),
+      pages,
       title,
-      year: parseInt(year),
+      year,
       id: crypto.randomBytes(4).toString("hex"),
     };
     const filePath = path.join(__dirname, "../../../db.json");

@@ -1,10 +1,16 @@
 const path = require("path");
+const Joi = require("joi");
 const fs = require("fs");
+const { validateSchema } = require("../../../ultis/joiValidate");
 
+
+const paramSchema = Joi.object({
+  bookId: Joi.string().required(),
+})
 function deleteBook(req, res, next) {
   //delete input validation
   try {
-    const { bookId } = req.params;
+    const { bookId } = validateSchema(paramSchema, req.params);
     const filePath = path.join(__dirname, "../../../db.json");
     //delete processing
 

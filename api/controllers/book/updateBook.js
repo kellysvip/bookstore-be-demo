@@ -11,15 +11,19 @@ const requestSchema = Joi.object({
   pages: Joi.number().default(1),
   year: Joi.number().default(0),
   imageLink: Joi.string(),
+  
 });
+
+const paramSchema = Joi.object({
+  bookId: Joi.string().required(),
+})
 
 function updateBook(req, res, next) {
   try {
-    const { author, country, imageLink, language, pages, title, year } =
+    const { ...updates } =
       validateSchema(requestSchema, req.body);
 
-    const { bookId } = req.params;
-    const updates = req.body;
+    const { bookId } = validateSchema(paramSchema, req.params);
     const filePath = path.join(__dirname, "../../../db.json");
 
     //put processing
