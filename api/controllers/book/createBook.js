@@ -3,6 +3,7 @@ const { validateSchema } = require("../../../ultis/joiValidate");
 const path = require("path");
 const fs = require("fs");
 const crypto = require("crypto");
+var createError = require('http-errors')
 
 const requestSchema = Joi.object({
   author: Joi.string().required(),
@@ -13,8 +14,7 @@ const requestSchema = Joi.object({
   year: Joi.number().default(2022),
   limit: Joi.number().default(10),
   imageLink: Joi.string().required(),
-  link: Joi.string().required(),
-  id: Joi.string().required(),
+  id: Joi.string(),
 });
 
 /**
@@ -26,8 +26,10 @@ const requestSchema = Joi.object({
 
 function createBook(req, res, next) {
   try {
-    const { author, country, language, title, pages, year, imageLink } =
+    const { author, country, language, title, pages, year, imageLink } = { value, error  } =
       validateSchema(requestSchema, req.body);
+
+      
     //post processing
     const newBook = {
       author,
@@ -45,15 +47,15 @@ function createBook(req, res, next) {
 
     //Add new book to book JS object
     books.push(newBook);
-    //Add new book to db JS object                            //
+    //Add new book to db JS object                           
     db.books = books;
     //write and save to db.json
     fs.writeFileSync(filePath, JSON.stringify(db));
+    
     //post send response
     res.status(200).send(newBook);
   } catch (error) {
-    console.log("error", error);
-    next(error);
+    next(createError(401, error))
   }
 }
 

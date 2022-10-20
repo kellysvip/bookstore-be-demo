@@ -3,6 +3,8 @@ const { validateSchema } = require("../../../ultis/joiValidate")
 const fs = require("fs");
 const Joi = require("joi");
 const path = require('path');
+var createError = require('http-errors')
+
 const requestSchema = Joi.object({
   author: Joi.string(),
   country: Joi.string(),
@@ -10,7 +12,7 @@ const requestSchema = Joi.object({
   title: Joi.string(),
   page: Joi.number().default(1),
   limit: Joi.number().default(10),
-});
+}).default({});
 
 /**
  * params: /
@@ -39,7 +41,7 @@ const requestSchema = Joi.object({
     
     if (lodash.isEmpty(filterQuery)) {
         console.log('clg if isEmpty')
-      res.status(200).send(books);
+      res.status(200).send(books.slice(offset, offset + limit));
     }
 
     let result = [];
@@ -55,8 +57,7 @@ const requestSchema = Joi.object({
     //send response
     res.status(200).send(result);
   } catch (error) {
-    console.log('error', error)
-    next(error);
+    next(createError(401, error))
   }
 }
 

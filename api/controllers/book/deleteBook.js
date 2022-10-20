@@ -2,6 +2,7 @@ const path = require("path");
 const Joi = require("joi");
 const fs = require("fs");
 const { validateSchema } = require("../../../ultis/joiValidate");
+var createError = require('http-errors')
 
 
 const paramSchema = Joi.object({
@@ -32,7 +33,7 @@ function deleteBook(req, res, next) {
     //delete send response
     res.status(200).send({});
   } catch (error) {
-    next(error);
+    next(createError(401, error))
   }
 }
 

@@ -2,15 +2,17 @@ const Joi = require("joi");
 const { validateSchema } = require("../../../ultis/joiValidate");
 const path = require("path");
 const fs = require("fs");
+const createError = require("http-errors");
 
 const requestSchema = Joi.object({
   author: Joi.string(),
   country: Joi.string(),
   language: Joi.string(),
   title: Joi.string(),
-  pages: Joi.number().default(1),
-  year: Joi.number().default(0),
+  pages: Joi.number(),
+  year: Joi.number(),
   imageLink: Joi.string(),
+  link: Joi.string(),
   
 });
 
@@ -47,7 +49,7 @@ function updateBook(req, res, next) {
     //put send response
     res.status(200).send(updatedBook);
   } catch (error) {
-    next(error);
+    next(createError(401, error))
   }
 }
 

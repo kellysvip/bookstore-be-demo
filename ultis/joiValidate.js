@@ -1,7 +1,8 @@
 const Joi = require("joi");
 
 function validateSchema(schema, parameters) {
-    return Joi.attempt(parameters, schema)
+    const result = Joi.attempt(parameters, schema)
+    return result;
 } 
 
 module.exports = {validateSchema}
